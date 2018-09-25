@@ -1,0 +1,37 @@
+0  Local cell:   Name:
+0  0             n (display 1..n)
+0  1             j (index in loop
+0  2             1 (literal)
+0  3             n < j
+
+0       allocate space for 4 local cells
+4 4
+
+0       n = keyboard input
+27 0
+
+0       j <- 1
+22 1 1
+22 2 1
+
+0       top of loop
+1 1001
+
+0       if n < j exit loop
+16 3 0 1
+8 1002 3
+
+0       println j
+28 1
+29
+
+0       j = j+1
+9 1 1 2
+
+0       go up to top of loop
+7 1001
+
+0       exit loop
+1 1002
+
+26

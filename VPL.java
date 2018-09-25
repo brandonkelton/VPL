@@ -175,86 +175,86 @@ public class VPL
         // Store current instruction pointer and base pointer after pushed-value-cells
         // Then set instruction pointer to the cell reference (that used to be a label)
         // Then move stack pointer past pushed values, ip and bp
-        mem[sp] = ip; // set the cell at the SP address to the return IP
+        mem[sp] = ip+1; // set the cell at the SP address to the return IP
         mem[sp + 1] = bp; // set the cell at the SP+1 address to the return BP
         bp = sp; // set the BP to the beginning of the new stack frame
         sp += (2 + numPassed); // move the SP to the new 'end of stack frame'
         ip = mem[ip]; // set the IP to the referenced cell
         numPassed = 0; // reset numPassed for future calls
       } else if (op == passCode) {
-        mem[sp + 2 + numPassed] = mem[mem[ip]]; numPassed++; ip++;
+        mem[sp + 2 + numPassed] = mem[bp + 2 + mem[ip]]; numPassed++; ip++;
       } else if (op == allocCode) {
         sp += mem[ip]; ip++; // increase sp by n for storing local variables
       } else if (op == returnCode) {
-        rv = mem[mem[ip]]; // store the return value in RV register
+        rv = mem[bp + 2 + mem[ip]]; // store the return value in RV register
         ip = mem[bp]; // set the IP to the return IP value stored at the BP
         sp = bp; // restore the SP to the end of the previous stack frame
         bp = mem[bp + 1]; // set the BP to the return BP value stored at BP+1
       } else if (op == getRetvalCode) {
-        mem[mem[ip]] = rv; ip++;
+        mem[bp + 2 + mem[ip]] = rv; ip++;
       } else if (op == jumpCode) {
         ip = mem[ip];
       } else if (op == condJumpCode) {
-        jmpTo = mem[ip]; ip++;
-        if (mem[ip] != 0) ip = jmpTo; else ip++;
+        int jmpTo = mem[ip]; ip++;
+        if (mem[bp + 2 + mem[ip]] != 0) ip = jmpTo; else ip++;
       } else if (op == addCode) {
-        mem[mem[ip]] = mem[mem[++ip]] + mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] + mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == subCode) {
-        mem[mem[ip]] = mem[mem[++ip]] - mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] - mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == multCode) {
-        mem[mem[ip]] = mem[mem[++ip]] * mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] * mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == divCode) {
-        mem[mem[ip]] = mem[mem[++ip]] / mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] / mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == remCode) {
-        mem[mem[ip]] = mem[mem[++ip]] % mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] % mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == equalCode) {
-        mem[mem[ip]] = mem[mem[++ip]] == mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] == mem[bp + 2 + mem[++ip]] ? 1 : 0; ip++;
       } else if (op == notEqualCode) {
-        mem[mem[ip]] = mem[mem[++ip]] != mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] != mem[bp + 2 + mem[++ip]] ? 1 : 0; ip++;
       } else if (op == lessCode) {
-        mem[mem[ip]] = mem[mem[++ip]] < mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] < mem[bp + 2 + mem[++ip]] ? 1 : 0; ip++;
       } else if (op == lessEqualCode) {
-        mem[mem[ip]] = mem[mem[++ip]] <= mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] <= mem[bp + 2 + mem[++ip]] ? 1 : 0; ip++;
       } else if (op == andCode) {
-        mem[mem[ip]] = mem[mem[++ip]] & mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] & mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == orCode) {
-        mem[mem[ip]] = mem[mem[++ip]] | mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] | mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == notCode) {
-        mem[mem[ip]] = mem[mem[++ip]] == 0 ? 1 : 0; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]] == 0 ? 1 : 0; ip++;
       } else if (op == oppCode) {
-        mem[mem[ip]] = -mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = -mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == litCode) {
-        mem[mem[ip]] = mem[++ip]; ip++; // Literal, so actual value stored in this memory cell
+        mem[bp + 2 + mem[ip]] = mem[++ip]; ip++; // Literal, so actual value stored in this memory cell
       } else if (op == copyCode) {
-        mem[mem[ip]] = mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == getCode) {
-        mem[mem[ip]] = mem[hp - mem[mem[++ip]] + mem[mem[++ip]]]; ip++; // get value in heap at two addresses added together
+        mem[bp + 2 + mem[ip]] = mem[hp - mem[bp + 2 + mem[++ip]] + mem[bp + 2 + mem[++ip]]]; ip++; // get value in heap at two addresses added together
       } else if (op == putCode) {
-        mem[hp - mem[mem[ip]] + mem[mem[++ip]]] = mem[mem[++ip]]; ip++; // put value in cell at combined address location
+        mem[hp - mem[bp + 2 + mem[ip]] + mem[bp + 2 + mem[++ip]]] = mem[bp + 2 + mem[++ip]]; ip++; // put value in cell at combined address location
       } else if (op == haltCode) {
         done = true;
       } else if (op == inputCode) {
         System.out.print("? ");
-        mem[mem[ip]] = keys.nextInt(); ip++;
+        mem[bp + 2 + mem[ip]] = keys.nextInt(); ip++;
       } else if (op == outputCode) {
-        System.out.println(mem[mem[ip]]); ip++;
+        System.out.println(mem[bp + 2 + mem[ip]]); ip++;
       } else if (op == newlineCode) {
         System.out.println();
       } else if (op == symbolCode) {
-        if (mem[mem[ip]] >= 32 && mem[mem[ip]] <= 126) {
-          System.out.print(mem[mem[ip]]);
+        if (mem[bp + 2 + mem[ip]] >= 32 && mem[bp + 2 + mem[ip]] <= 126) {
+          System.out.print((char)mem[bp + 2 + mem[ip]]);
         }
         ip++;
       } else if (op == newCode) {
-        mem[mem[ip]] = hp -= mem[mem[++ip]]; ip++;
+        mem[bp + 2 + mem[ip]] = hp -= mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == allocGlobalCode) {
-        sp = codeEnd + mem[ip];
+        sp = codeEnd + 1 + mem[ip];
         gp = codeEnd + 1;
         ip++;
       } else if (op == toGlobalCode) {
-        mem[gp + mem[ip]] = mem[mem[++ip]]; ip++;
+        mem[gp + mem[ip]] = mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == fromGlobalCode) {
-        mem[mem[ip]] = mem[gp + ++ip]; ip++;
+        mem[bp + 2 + mem[ip]] = mem[gp + mem[++ip]]; ip++;
       }
 
       else

@@ -1,0 +1,23 @@
+4 3         allocate 3 local cells
+27 0        get input and put in cell 0 (20)
+3 0         pass the input into cell 0 of start of new stack frame
+2 1001      initialize new stack frame and call label 1001
+6 1         get return value and put in cell 1
+28 1        output value in cell 1
+29          newline
+26          halt
+
+1 1001      subroutine 1001
+4 6         allocate 6 local cells
+22 2 2      store literal 2 in cell 2
+22 1 1      store literal 1 in cell 1
+16 6 0 2    is the input in cell 0 less than literal 2: store 1 or 0 in cell 6
+8 2001 6    jump to label 2001 if cell 6 is non-zero
+10 3 0 1    subtract value in cell 1 from value in cell 0, store cell 3 (19)
+3 3         pass value in cell 3
+2 1001      call label 1001 again (loop)
+6 4         get rv and put in cell 4
+11 5 0 4    multiple cell 0 by cell 4 and store in cell 5
+5 5         return value in cell 5
+1 2001      label 2001
+5 1         store cell 1 value in rv and return
