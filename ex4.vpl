@@ -9,22 +9,22 @@
 29
 26
 1 101       subroutine 101
-4 7         allocate 6 cells (corrected to 7 cells)
+4 6         allocate 6 cells
 22 2 1      put literal 1 into cell 2
 22 5 0      put literal 0 into cell 5
 14 6 1 5    is cell 1 equal to cell 5? put 1 or 0 in cell 6
 8 102 6     if cell 6 is non-zero, jump to label 102
-14 6 1 0    
-8 102 6
-10 3 0 2
-10 4 1 2
-3 3
-3 4
-2 101
-6 6
-3 3
-3 1
-2 101
+14 6 1 0    is cell 1 equal to cell 0? put 1 or 0 in cell 6
+8 102 6     if cell 6 is non-zero, jump to label 102
+10 3 0 2    cell 0 - cell 2, store in cell 3
+10 4 1 2    cell 1 - cell 2, store in cell 4
+3 3         pass cell 3 to new stack frame
+3 4         pass cell 4 to new stack frame
+2 101       call 101
+6 6         get return val and put in cell 6
+3 3         pass cell 3
+3 1         pass cell 1
+2 101       call 101 *
 6 7
 9 6 6 7
 5 6
