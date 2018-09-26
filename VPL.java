@@ -228,9 +228,9 @@ public class VPL
       } else if (op == copyCode) {
         mem[bp + 2 + mem[ip]] = mem[bp + 2 + mem[++ip]]; ip++;
       } else if (op == getCode) {
-        mem[bp + 2 + mem[ip]] = mem[hp - mem[bp + 2 + mem[++ip]] + mem[bp + 2 + mem[++ip]]]; ip++; // get value in heap at two addresses added together
+        mem[bp + 2 + mem[ip]] = mem[(mem[bp + 2 + mem[++ip]] + mem[bp + 2 + mem[++ip]])]; ip++; // get value in heap at two addresses added together
       } else if (op == putCode) {
-        mem[hp - mem[bp + 2 + mem[ip]] + mem[bp + 2 + mem[++ip]]] = mem[bp + 2 + mem[++ip]]; ip++; // put value in cell at combined address location
+        mem[(mem[bp + 2 + mem[ip]] + mem[bp + 2 + mem[++ip]])] = mem[bp + 2 + mem[++ip]]; ip++; // put value in cell at combined address location
       } else if (op == haltCode) {
         done = true;
       } else if (op == inputCode) {
